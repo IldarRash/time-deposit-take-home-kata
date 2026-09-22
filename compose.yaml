@@ -15,5 +15,19 @@ services:
       timeout: 3s
       retries: 30
 
+  swagger:
+    image: swaggerapi/swagger-ui:v5.33.0
+    profiles: [docs]
+    environment:
+      SWAGGER_JSON_URL: /openapi.yaml
+      VALIDATOR_URL: none
+    ports:
+      - '127.0.0.1:${SWAGGER_PORT:-8081}:8080'
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    volumes:
+      - ./java/openapi.yaml:/usr/share/nginx/html/openapi.yaml:ro
+      - ./scripts/swagger/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+
 volumes:
   deposit-data:

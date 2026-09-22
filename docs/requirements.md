@@ -73,7 +73,7 @@ are outside acceptance scope; do not add speculative handling.
 | A04 | Withdrawals and calculation | Withdrawals are stored historical records returned by GET. Assume `balance` already reflects any historical withdrawals; do not subtract them again or invent withdrawal processing. |
 | A05 | Withdrawal JSON shape | Return `id`, `amount`, and `date` under each deposit; the parent provides deposit identity. Use ISO `YYYY-MM-DD` dates with no time zone. |
 | A06 | Endpoints and status codes | Choose `GET /time-deposits` returning 200 JSON and `POST /time-deposits/update-balances` with no body returning 204. Paths and POST status are solution decisions. |
-| A07 | Swagger versus exactly two endpoints | Publish a static OpenAPI contract importable into Swagger Editor/UI. Do not add runtime documentation or Actuator handlers; document only the two business operations. Framework error handling is not an advertised API. |
+| A07 | Swagger versus exactly two endpoints | Publish a static OpenAPI contract and an optional separate Swagger UI container on localhost:8081. Its proxy lets Execute reach the Java application on port 8080 without CORS changes. The Java application still exposes only two business operations, no documentation/Actuator handlers. Framework error handling is not an advertised API. |
 | A08 | List order | Order deposits and nested withdrawals by ID for deterministic output; upstream imposes no order. |
 | A09 | Empty database | GET returns `[]`; POST succeeds with 204 and changes nothing. |
 | A10 | Batch transaction | One transaction loads, calculates, and persists the batch. A failure must not leave partially updated balances. This is a solution consistency decision. |

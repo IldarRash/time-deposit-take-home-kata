@@ -106,6 +106,7 @@ of the initial conversation.
 
 | Persistence correction, 2026-09-22 | Added a failing service regression and six PostgreSQL decimal no-op cases, then restricted writes to changed legacy balances. | Preserve stored precision without changing mandated calculator arithmetic. | Service regression failed before the fix and passes after it; 59 local unit/contract tests pass. New PostgreSQL cases await CI. |
 | Contract and schema review, 2026-09-22 | Strengthened OpenAPI status/schema assertions, full-context route enumeration and all required-column/key/FK regressions. | Close specific gaps identified by separate review agents. | Contract assertions pass locally; full-context HTTP and PostgreSQL checks require CI. |
+| Swagger execution, 2026-09-22 | Added an optional pinned Swagger UI container with a same-origin proxy and a Chromium Execute smoke check. | Make the documented contract executable without adding application endpoints. | Compose configuration and browser script syntax checked locally; real browser/database run is tracked in status.md. |
 
 Additional work must extend this record with its actual evidence. The same
 assistant reviewed the implementation against the requirements; no independent

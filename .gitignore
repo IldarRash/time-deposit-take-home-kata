@@ -7,4 +7,5 @@ __pycache__/
 .vs/
 .idea/
 package-lock.json
+!scripts/browser-check/package-lock.json
 .vscode/

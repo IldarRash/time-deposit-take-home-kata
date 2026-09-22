@@ -8,7 +8,8 @@ info:
     plan rates are divided by 12; stored days and withdrawals are unchanged.
     Repeated updates accrue again and are not idempotent.
 servers:
-  - url: http://localhost:8080
+  - url: /
+    description: Same origin; local Swagger UI proxies the two API paths to port 8080.
 paths:
   /time-deposits:
     get:
@@ -59,7 +60,7 @@ components:
           description: Exact legacy string. Known values are basic, student, and premium; other strings earn no interest.
         balance:
           type: number
-          description: Decimal database balance; the existing calculator uses double arithmetic. Not restricted to two decimal places.
+          description: Decimal database balance. Unchanged legacy balances retain the original decimal; changed balances use the legacy double result. Not restricted to two decimal places.
         days:
           type: integer
           format: int32

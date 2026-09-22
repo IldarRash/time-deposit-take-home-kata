@@ -78,8 +78,9 @@ Example GET response:
 Amounts are JSON numbers; clients must not depend on textual trailing zeros.
 Use dedicated response records to add withdrawals without changing `TimeDeposit`.
 Keep `planType` a string in the API schema, including unsupported legacy values.
-The static `java/openapi.yaml` describes both operations. Its Swagger import workflow
-avoids extra runtime documentation endpoints.
+The static `java/openapi.yaml` describes both operations. An optional standalone
+Swagger UI container proxies these exact paths to the application, allowing browser
+Execute on the same origin without extra Java documentation endpoints or CORS rules.
 
 ## Database and transactions
 

@@ -1,0 +1,20 @@
+# Development documentation server only; the Java API still has two operations.
+# Proxy the exact API paths on the UI origin, so Execute needs no browser CORS exception.
+server {
+    listen 8080;
+    server_name localhost;
+    root /usr/share/nginx/html;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /time-deposits {
+        proxy_pass http://host.docker.internal:8080;
+    }
+
+    location = /time-deposits/update-balances {
+        proxy_pass http://host.docker.internal:8080;
+    }
+}

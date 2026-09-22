@@ -26,6 +26,16 @@ jobs:
           cache-dependency-path: java/pom.xml
       - name: Verify with real PostgreSQL
         run: ./mvnw -B -ntp verify
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: scripts/browser-check/package-lock.json
+      - name: Install browser verification tooling
+        working-directory: scripts/browser-check
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
       - name: Verify clean startup and restart persistence
         working-directory: .
         run: bash scripts/smoke-test.sh

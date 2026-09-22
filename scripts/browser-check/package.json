@@ -1,0 +1,12 @@
+{
+  "name": "time-deposit-swagger-check",
+  "private": true,
+  "type": "module",
+  "description": "CI-only browser check; running the Java application or Swagger UI does not require Node",
+  "scripts": {
+    "test": "node swagger-smoke.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}

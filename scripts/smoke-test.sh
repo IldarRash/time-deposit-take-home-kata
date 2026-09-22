@@ -12,7 +12,7 @@ cleanup() {
     kill "$app_pid" 2>/dev/null || true
     wait "$app_pid" 2>/dev/null || true
   fi
-  docker compose down
+  docker compose --profile docs down
 }
 trap cleanup EXIT
 
@@ -76,3 +76,8 @@ with open('java/target/smoke-second.json') as f:
 assert [d['balance'] for d in deposits] == [1202, Decimal('1206.01'), Decimal('1210.02'), 1200, 1200, 1200]
 PY
 echo 'PASS: packaged application, demo data, two accrual cycles, and restart persistence'
+
+docker compose --profile docs up -d swagger
+curl --fail --silent --show-error --retry 30 --retry-delay 1 --retry-all-errors \
+  http://localhost:8081/openapi.yaml > java/target/smoke-openapi.yaml
+node scripts/browser-check/swagger-smoke.mjs

@@ -4,7 +4,7 @@
 
 - JDK 17; `java -version` must report Java 17 and `JAVA_HOME` must point to its JDK.
 - Docker with Linux containers and Docker Compose v2; `docker info` must succeed.
-- Network access for the first Maven dependency download and PostgreSQL image pull.
+- Network access for the first Maven dependency download and PostgreSQL/Swagger image pulls.
 
 Maven 3.9.11 is downloaded by the checked-in Wrapper. No IDE or globally installed
 Maven is required. The database credentials below are local demo defaults.
@@ -40,12 +40,28 @@ The Compose volume retains data when the application or database is restarted.
 
 ## Swagger contract and requests
 
-Import [java/openapi.yaml](../java/openapi.yaml) into
-[Swagger Editor](https://editor.swagger.io/) using **File -> Import file**.
-Inspect `listTimeDeposits` and `updateTimeDepositBalances`, their response schemas,
-and the `http://localhost:8080` server. Execute the matching requests below from
-your terminal. Swagger documents the static contract; browser cross-origin
-"Try it out" access from the hosted editor is not configured.
+With the Java application running on port 8080, start the optional documentation
+container from the repository root:
+
+```sh
+docker compose --profile docs up -d swagger
+```
+
+Open **http://localhost:8081**. The pinned Swagger UI 5.33.0 loads the checked-in
+[java/openapi.yaml](../java/openapi.yaml) automatically. Expand **GET /time-deposits**,
+click **Try it out**, then **Execute**: the server response is 200 and a JSON array.
+Expand **POST /time-deposits/update-balances**, click **Try it out** and **Execute**:
+expect 204 with no body. Execute GET again to see the persisted updated balances.
+
+The contract uses the relative server `/`. The documentation container proxies
+only those two API paths to the Java application on the host at port 8080, so
+browser requests stay on the UI's origin and need no CORS exception. Swagger UI
+is a separate local tool, not an extra application endpoint. Neither Node nor an
+IDE is needed to use it. The hosted Swagger Editor is not the execution workflow.
+See the upstream [Swagger UI installation](https://swagger.io/docs/open-source-tools/swagger-ui/usage/installation/)
+and [configuration](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/) documentation.
+
+Equivalent terminal requests are:
 
 ```sh
 curl -i http://localhost:8080/time-deposits
@@ -72,7 +88,7 @@ Each POST applies another cycle. It is not idempotent, does not advance days, an
 does not subtract historical withdrawals. Decimal JSON formatting may omit zeros.
 The preserved rounding rules and other assumptions are in [requirements](requirements.md).
 
-Stop the application with Ctrl+C and the database with `docker compose down`.
+Stop the application with Ctrl+C and the containers with `docker compose --profile docs down`.
 That command retains the database volume and its data.
 
 ## Tests and packaged application
@@ -98,7 +114,25 @@ GitHub Actions runs full verification on Java 17, then
 [scripts/smoke-test.sh](../scripts/smoke-test.sh). This Linux smoke check uses a
 separate Compose project and database port 55432, starts the packaged JAR, loads
 demo data, performs two accrual cycles, and verifies state after an application
-restart. It requires Bash, Python 3, curl, Docker, and a free application port 8080.
+restart. It then opens the real Swagger UI in Chromium and clicks Execute for
+GET -> POST -> GET, asserting a third persisted cycle and unchanged withdrawals/days.
+The browser screenshot is retained with the CI test artifacts.
+
+To run that same smoke check locally on Linux, first build with `./mvnw verify`,
+then install its CI-only browser tooling (Node 22) and run from the repository root:
+
+```sh
+npm ci --prefix scripts/browser-check
+cd scripts/browser-check
+npx playwright install --with-deps chromium
+cd ../..
+bash scripts/smoke-test.sh
+```
+
+Smoke requires Bash, Python 3, curl, Docker, Node 22 and free ports 8080/8081/55432.
+This Node dependency is only for automated browser verification; the application
+and manual Swagger flow remain Java/Docker only. The setup follows the
+[Playwright CI guidance](https://playwright.dev/docs/ci).
 
 Configuration: `DB_URL`, `DB_USER`, and `DB_PASSWORD` override the application
 database connection. `DB_PORT` changes Compose's published database port; if
