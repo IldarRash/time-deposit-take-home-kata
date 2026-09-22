@@ -34,6 +34,12 @@ when each resulting commit remains meaningful and independently verifiable.
 
 ## Working agreement for every step
 
+Subsequent review corrections were completed in separate commits: `a8ebbd6`
+(preserve unchanged database decimals), `61e77c1` (complete contract/schema
+regressions), and `309be6b` (executable Swagger UI and browser smoke). The original
+calculator and its characterization history remain unchanged. See the current
+status for the 91 Java scenarios and actual browser execution evidence.
+
 1. Read the current requirements and inspect Git status.
 2. State the selected step and the smallest observable outcome.
 3. Make that step's changes; preserve unrelated work.

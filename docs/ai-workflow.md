@@ -18,14 +18,46 @@ workflow and prompt templates below make the project rules reusable without
 copying a user's global assistant configuration. No custom agent definitions or
 private skill packages are required for subsequent work in this repository.
 The initial session also used locally available analysis, architecture, and
-GitHub workflow guidance; the relevant project decisions are recorded here and
-in the linked documents, not dependent on those local files.
+GitHub workflow guidance. The sanitized inventory below records their relevant
+operational effects. Private global configuration and the full conversation are
+not part of this repository; exact reconstruction of that historical environment
+is not claimed.
+
+### Material guidance and agent configuration
+
+| Local guidance identifier | Rules applied here and portable replacement |
+| --- | --- |
+| `agent-workflow` | Work in small authorized stages, record scope/evidence, preserve unrelated edits and assign non-overlapping ownership. Use this document and the implementation plan to repeat those stages. |
+| `feature-analysis` | Separate original requirements, assumptions, exclusions and acceptance scenarios. The resulting project specification is `docs/requirements.md`. |
+| `technical-architecture` | Identify compatibility boundaries, persistence mapping and verification before edits. The resulting decisions are in `docs/architecture.md`. |
+| `github-workflow` | Inspect status, make logical commits, publish only to the personal fork and inspect CI. Never publish private material or write upstream. These rules are also in AGENTS.md. |
+| `systematic-debugging` | Reproduce a concrete failure before fixing it; distinguish executed checks from hypotheses. Applied to the decimal no-op regression. |
+
+The initial root's exact selectable model identifier and Codex desktop build
+remain **unknown**. Later review tasks explicitly selected **GPT-5.6-Sol** with
+fresh context for requirements, testing and design; their brief allowed only
+reading assigned sources and returning findings. The contract-test implementation
+task selected **GPT-5.6-Terra**, owned only `OpenApiContractTest` and `DepositApiIT`,
+and was instructed not to edit production/config/docs or commit. The root integrated
+and verified the changes. These are assigned capabilities, not a claim of enforced
+tool isolation. No separate hosted agent service or credentials are required.
+
+A sanitized excerpt of the actual contract-test brief was:
+
+> Strengthen OpenAPI contract verification: enumerate all app-owned controller
+> mappings in the actual full Spring application context; require exactly existing
+> GET and POST. Assert status codes, media type, required property sets/types/refs
+> including nested withdrawal/date and empty 204 schema. Reuse existing dependencies;
+> do not add a generic schema-validation framework. Own only the two assigned test
+> files; root handles persistence tests and tooling.
 
 Codex supports repository instructions through AGENTS.md; see the
 [official instructions documentation](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 For another coding assistant, explicitly provide this file and AGENTS.md as
 context. Reproducibility means the inputs, constraints, checks, and decisions are
-available; generated wording/code is not expected to be byte-identical.
+available; generated wording/code is not expected to be byte-identical. The model
+and historical metadata limits above do not affect building or testing the Java
+application. The prompts below are templates, not a claimed verbatim transcript.
 
 ## Repeat the workflow
 
@@ -104,11 +136,13 @@ of the initial conversation.
 | API, 2026-09-22 | Added a two-operation controller, static OpenAPI, mapping-contract check, and HTTP integration tests. | Expose the required behavior without extra endpoints. | CI run 35756927397 passed 58 unit and 15 PostgreSQL/HTTP scenarios; local unit tests also passed. |
 | Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | CI run 35757618364 passed 58 unit + 15 integration scenarios, coverage gates, seed replay, two cycles, and restart persistence. Local packaging passed. |
 
-| Persistence correction, 2026-09-22 | Added a failing service regression and six PostgreSQL decimal no-op cases, then restricted writes to changed legacy balances. | Preserve stored precision without changing mandated calculator arithmetic. | Service regression failed before the fix and passes after it; 59 local unit/contract tests pass. New PostgreSQL cases await CI. |
-| Contract and schema review, 2026-09-22 | Strengthened OpenAPI status/schema assertions, full-context route enumeration and all required-column/key/FK regressions. | Close specific gaps identified by separate review agents. | Contract assertions pass locally; full-context HTTP and PostgreSQL checks require CI. |
-| Swagger execution, 2026-09-22 | Added an optional pinned Swagger UI container with a same-origin proxy and a Chromium Execute smoke check. | Make the documented contract executable without adding application endpoints. | Compose configuration and browser script syntax checked locally; real browser/database run is tracked in status.md. |
+| Persistence correction, 2026-09-22 | Added a failing service regression and six PostgreSQL decimal no-op cases, then restricted writes to changed legacy balances. | Preserve stored precision without changing mandated calculator arithmetic. | Service regression failed before the fix and passes after it; all six new PostgreSQL cases passed in CI 35766540349 and the final correction run below. |
+| Contract and schema review, 2026-09-22 | Strengthened OpenAPI status/schema assertions, full-context route enumeration and all required-column/key/FK regressions. | Close specific gaps identified by separate review agents. | CI 35766920462 passed 59 unit/contract + 32 PostgreSQL/HTTP scenarios and the coverage gates; 59 unit/contract tests also passed locally. |
+| Swagger execution, 2026-09-22 | Added an optional pinned Swagger UI container with a same-origin proxy and a Chromium Execute smoke check. | Make the documented contract executable without adding application endpoints. | CI 35766920462 passed the packaged-JAR restart smoke and actual browser GET -> POST 204 -> GET through Swagger; screenshot retained. |
 
-Additional work must extend this record with its actual evidence. The same
-assistant reviewed the implementation against the requirements; no independent
-reviewer or author approval is implied. Author review and submission remain
-separate from the completed implementation and its automated checks.
+Additional work must extend this record with its actual evidence. Initial review
+was by the implementing assistant; subsequent requirements, testing and design
+reviews used separate agents without the implementation conversation. Their
+findings prompted the corrections above. This is independent AI review, not an
+external human review or evidence of the author's live-coding performance.
+Author review and submission remain separate from automated verification.

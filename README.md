@@ -15,6 +15,32 @@ existing calculator's behavior. See the status page for executed verification.
 
 Baseline: upstream commit `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
 
+### Quick start
+
+With **Java 17** and **Docker Compose v2**, from the repository root:
+
+```sh
+docker compose --profile docs up -d
+cd java
+./mvnw spring-boot:run
+```
+
+On Windows use `.\mvnw.cmd` instead of `./mvnw`. Keep the application running.
+In a second terminal at the repository root, load optional demo data:
+
+```sh
+docker compose cp java/demo/seed.sql db:/tmp/seed.sql
+docker compose exec -T db psql -U deposits -d time_deposits -v ON_ERROR_STOP=1 -f /tmp/seed.sql
+```
+
+Open **http://localhost:8081** and use Swagger **Try it out → Execute** for GET,
+then POST, then GET again. Every POST applies another interest cycle. The Java
+API runs on port 8080; the separate Swagger tool adds no application endpoints.
+
+From `java/`, `./mvnw test` runs unit checks and `./mvnw verify` also runs real
+PostgreSQL/HTTP integration checks (Docker required). See [running](docs/running.md)
+for packaged-JAR smoke, configuration and shutdown commands.
+
 ## XA Bank Time Deposit
 
 ### Context

@@ -2,6 +2,29 @@
 
 Last updated: 2026-09-22. This file records actual progress, not just intended scope.
 
+## Current verification after review corrections
+
+[CI run 35766920462](https://github.com/IldarRash/time-deposit-take-home-kata/actions/runs/35766920462)
+at `309be6b` passed **59 unit/contract + 32 PostgreSQL/HTTP scenarios**, with no
+failures, errors or skips. Calculator/rules coverage gates passed. Both the
+packaged-JAR/restart smoke and the real Chromium Swagger **Execute GET -> POST
+204 -> GET** flow passed; the latter verified a third persisted accrual cycle.
+The CI artifact includes test reports and `smoke-swagger.png`.
+
+| Review finding | Resolution and evidence |
+| --- | --- |
+| An unchanged Double could overwrite a higher-precision database decimal | `a8ebbd6` writes only changed calculator results. One service regression failed before the fix and passed afterward; six real-PostgreSQL no-op cases pass over two cycles. The original calculator and shared model are unchanged. |
+| OpenAPI test checked only paths/methods | `61e77c1` asserts response codes, JSON types, required properties and nested references. HTTP tests enumerate the full application context and reject additional controllers/routes. |
+| Some required-column/key constraints lacked regression protection | `61e77c1` adds eleven invalid-insert scenarios covering every required column, both primary keys and the withdrawal foreign key. All pass on PostgreSQL. |
+| Swagger could not execute the API in the browser | `309be6b` adds an optional separate UI/proxy. CI uses its actual Execute buttons and verifies the emitted requests and persisted balances. The Java application still has two operations. |
+| Historical assistant setup details were incomplete | The assistance record now identifies material guidance and subsequent agent configurations, distinguishes templates from actual brief excerpts, and explicitly limits reproducibility claims where original model/build metadata is unknown. |
+
+Two separate reviewers rechecked the correction diff without editing it and
+reported no material blockers. They reviewed source; executed evidence comes
+from the CI run above. This is not an assertion of external human approval.
+
+## Original implementation stages
+
 | Step | Status | Evidence |
 | --- | --- | --- |
 | Requirements and design | Complete | `432b076`; upstream and legacy behavior documented. |
@@ -62,7 +85,7 @@ boundaries are sufficient; avoid generic frameworks and speculative features.
 
 ## Handoff
 
-Implementation and automated verification are complete. The remaining author
+Implementation, review corrections and automated verification are complete. The remaining author
 actions are to review the solution, understand the recorded tradeoffs, and submit
 the public repository link. No submission email or deployment was performed.
 Subsequent documentation-only commits do not change the verified application;
