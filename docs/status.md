@@ -11,8 +11,8 @@ Last updated: 2026-09-22. This file records actual progress, not just intended s
 | Calculation refactor | Complete | Same 57 scenarios pass; rule dispatch extracted into one small class. |
 | Persistence and transactions | Complete | 11 PostgreSQL integration scenarios passed in CI run 35756519228. |
 | HTTP API and OpenAPI | Complete | CI run 35756927397 passed 58 unit and 15 integration scenarios. |
-| Runtime and CI | Implemented, smoke run pending | Compose, safe demo seed, executable JAR, and clean-start/restart smoke check. |
-| Final clean verification | Pending latest CI | Previous API and DB checks passed; latest runtime changes still need CI. |
+| Runtime and CI | Complete | Executable JAR, seed replay, two cycles, and restart persistence passed in CI. |
+| Final clean verification | Complete | Run 35757618364 at `e204f69`: 58 unit + 15 integration scenarios, coverage gate, and runtime smoke all passed. |
 
 The author has authorized sequential implementation of the complete solution,
 with small commits and publication to the personal fork. Java 17 and simplicity
@@ -49,7 +49,21 @@ boundaries are sufficient; avoid generic frameworks and speculative features.
   string contract without an invented 100-character restriction. The existing
   mixed-plan persistence scenario now includes a longer unknown plan string.
 - Runtime setup: `mvnw.cmd package` passed all 58 local unit/contract scenarios
-  and produced the executable Spring Boot JAR. Docker smoke execution is pending CI.
+  and produced the executable Spring Boot JAR.
+- Full runtime: [CI run 35757618364](https://github.com/IldarRash/time-deposit-take-home-kata/actions/runs/35757618364)
+  at `e204f69` passed 58 unit scenarios, 15 PostgreSQL/HTTP integration scenarios,
+  and the calculator/rules coverage gate (100% lines and branches). No tests were
+  skipped. The separate smoke step started the packaged JAR against a clean
+  Compose database, loaded and replayed demo data, applied two accrual cycles,
+  and verified that balances and withdrawals survive an application restart.
 - Docker engine named-pipe access is denied by the local sandbox; database tests
-  will require an accessible Docker environment, including CI. This is not a
-  database test pass or a reason to skip required integration verification.
+  were executed in GitHub Actions instead. Local unit tests and packaging passed;
+  no local PostgreSQL execution is claimed.
+
+## Handoff
+
+Implementation and automated verification are complete. The remaining author
+actions are to review the solution, understand the recorded tradeoffs, and submit
+the public repository link. No submission email or deployment was performed.
+Subsequent documentation-only commits do not change the verified application;
+the repository Actions page also shows verification for the latest published head.

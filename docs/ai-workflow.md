@@ -46,9 +46,10 @@ checks its distribution SHA-256. Commands from `java/` are:
 ./mvnw verify
 ```
 
-On Windows use `mvnw.cmd test` and `mvnw.cmd verify`. The full suite will require
-a running Docker engine for PostgreSQL Testcontainers once integration tests are
-added. Unit tests and the Wrapper already run; integration verification is pending.
+On Windows use `mvnw.cmd test` and `mvnw.cmd verify`. The full suite requires
+a running Docker engine for PostgreSQL Testcontainers. Unit tests run locally;
+PostgreSQL and HTTP integration tests run successfully in CI. See status.md for
+the latest commit and runtime evidence.
 
 ## Reusable task prompts
 
@@ -100,11 +101,10 @@ of the initial conversation.
 | Characterization, 2026-09-22 | Replaced the placeholder assertion with 57 public-calculator scenarios; captured 24 numeric outputs from baseline. | Protect existing behavior before changing structure. | `mvnw.cmd clean test` passed all 57; calculator line/branch coverage 100%, with production code unchanged. |
 | Calculation refactor, 2026-09-22 | Extracted exact-string rule dispatch into one class using a JDK functional interface. | Separate varying formulas from common balance mutation without a class hierarchy. | The unchanged 57-scenario suite passes after refactoring; the shared model remains unchanged. |
 | Persistence, 2026-09-22 | Added JDBC mapping, Flyway schema, transactional service, PostgreSQL integration scenarios, and CI. | Add real persistence and verify decimal precision, rollback, and serialization. | CI run 35756519228 passed 57 unit scenarios and 11 PostgreSQL scenarios, none skipped. Local Docker remains sandbox-blocked. |
-| API, 2026-09-22 | Added a two-operation controller, static OpenAPI, mapping-contract check, and HTTP integration tests. | Expose the required behavior without extra endpoints. | Unit and compilation checks run locally; HTTP/PostgreSQL results are recorded in status.md after CI. |
-| Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | Local packaging and 58 unit scenarios pass. The new smoke check and SQL refinement are awaiting the next CI run. |
+| API, 2026-09-22 | Added a two-operation controller, static OpenAPI, mapping-contract check, and HTTP integration tests. | Expose the required behavior without extra endpoints. | CI run 35756927397 passed 58 unit and 15 PostgreSQL/HTTP scenarios; local unit tests also passed. |
+| Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | CI run 35757618364 passed 58 unit + 15 integration scenarios, coverage gates, seed replay, two cycles, and restart persistence. Local packaging passed. |
 
-Future build, test-writing, refactoring, persistence, API, and CI assistance must
-be added as those steps occur. No claim is made that the author has reviewed or
-accepted every design decision, or that an independent reviewer has checked the
-solution. The final submission must update this record with real implementation
-and verification outcomes, including remaining limitations.
+Additional work must extend this record with its actual evidence. The same
+assistant reviewed the implementation against the requirements; no independent
+reviewer or author approval is implied. Author review and submission remain
+separate from the completed implementation and its automated checks.

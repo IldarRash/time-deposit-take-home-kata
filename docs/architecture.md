@@ -1,7 +1,7 @@
 # Architecture and compatibility decisions
 
-Status: proposed implementation design for [the requirements](requirements.md).
-No framework, API, database adapter, or migration has been implemented yet.
+Implemented design for [the requirements](requirements.md).
+See [status](status.md) for the exact verification evidence and remaining handoff.
 
 ## Language and stack
 
@@ -10,12 +10,12 @@ sources and minimum Java version, keeps the exercise focused on Java refactoring
 and avoids translating the compatibility baseline to another language.
 Preserve the other language examples without modifying them.
 
-Planned stack: Spring Boot for startup, HTTP and transaction wiring; Spring JDBC
+Stack: Spring Boot 3.5.16 for startup, HTTP and transaction wiring; Spring JDBC
 for explicit SQL and mapping; PostgreSQL for persistence; Flyway for schema
 migrations; JUnit 5 and AssertJ for tests; JaCoCo for domain coverage;
-Testcontainers for real PostgreSQL integration tests. Add a Maven Wrapper.
-Resolve and pin compatible Java-17 library versions at implementation time;
-these are technology choices, not claims about a particular current release.
+Testcontainers 1.21.4 for real PostgreSQL 16.15 integration tests; Maven 3.9.11
+via its Wrapper. Dependency versions are pinned by the Maven POM and Spring Boot
+BOM; the same PostgreSQL image version is used in Compose and tests.
 
 JDBC avoids turning the shared legacy model into a persistence entity and makes
 batch locking and joins explicit. One Maven module and package boundaries are
@@ -42,14 +42,17 @@ HTTP controller -> application use cases -> persistence port
   into a named implementation without changing the calculator.
 - Separate rule selection/raw interest from common rounding and balance mutation.
   Preserve the original arithmetic order, including accumulation from zero.
-- Put use-case orchestration in `application`, HTTP DTOs/controllers in
-  `adapter.in.web`, JDBC mapping in `adapter.out.persistence`, and wiring in
-  `configuration`. These are planned package names, not existing folders.
+- Use-case orchestration and query records live in `application`, the controller
+  in `adapter.in.web`, and JDBC mapping in `adapter.out.persistence`.
+  `TimeDepositApplication` contains the one calculator bean; a separate
+  configuration hierarchy is unnecessary.
 - Define a persistence port around loading deposits (including a locking batch
   read), reading withdrawals, and saving balances. Keep SQL and framework
   annotations out of the calculator and plan rules.
-- Own transaction scope in an infrastructure-wired application boundary so the
-  read, calculation, and writes share one transaction and connection context.
+- Spring's `@Transactional` at the application service boundary owns the read,
+  calculation, and writes. This small framework dependency keeps orchestration
+  explicit without a custom transaction abstraction. The calculator and rules
+  remain free of framework annotations.
 
 ## API contract
 
@@ -58,7 +61,7 @@ HTTP controller -> application use cases -> persistence port
 | `GET /time-deposits` | None | 200, array of deposits with nested withdrawals |
 | `POST /time-deposits/update-balances` | No body | 204, no body |
 
-Example planned GET response:
+Example GET response:
 
 ```json
 [
@@ -75,7 +78,7 @@ Example planned GET response:
 Amounts are JSON numbers; clients must not depend on textual trailing zeros.
 Use dedicated response records to add withdrawals without changing `TimeDeposit`.
 Keep `planType` a string in the API schema, including unsupported legacy values.
-Publish a static `java/openapi.yaml` at the API step. Its Swagger import workflow
+The static `java/openapi.yaml` describes both operations. Its Swagger import workflow
 avoids extra runtime documentation endpoints.
 
 ## Database and transactions
@@ -85,26 +88,26 @@ identifiers such as `"timeDeposits"`, `"planType"`, and `"timeDepositId"`.
 Use integer primary keys, required columns, a withdrawal foreign key, and an
 index on the foreign key. Use `DATE` for withdrawal dates.
 
-Propose unconstrained PostgreSQL `NUMERIC` for balance and amount, avoiding an
+Use unconstrained PostgreSQL `NUMERIC` for balance and amount, avoiding an
 invented two-decimal storage rule. Map database decimals to legacy double values
 only at the calculation boundary; map finite updated double values back through
 `BigDecimal.valueOf`. That adapter conversion is separate from the legacy
 `new BigDecimal(interest)` rounding and must not replace it.
 
-Before finalizing this mapping, run a Testcontainers round-trip experiment with
-half-cent cases, fractional balances, and repeated updates. Acceptance: the
-reloaded finite double matches the direct legacy result and SQL does not truncate
-the stored balance. Exact arbitrary-precision money arithmetic is outside the
-legacy contract; document that limitation rather than claiming it is solved.
+Testcontainers round-trip checks cover half-cent cases, fractional balances, and
+repeated updates. The reloaded finite double matches the fixed baseline result,
+and SQL does not truncate fractional balances. Exact arbitrary-precision money
+arithmetic is outside the legacy contract; the double precision limitation is
+deliberately preserved.
 
 For updates, select deposits ordered by ID with `FOR UPDATE`, calculate, and
 persist balances in one transaction. PostgreSQL's default READ COMMITTED is the
-planned isolation level; verify lock behavior with two overlapping transactions.
+isolation level; a test observes lock contention between overlapping transactions.
 Withdrawals are unchanged. No application endpoint inserts or deletes deposits.
 Concurrent out-of-band database edits are outside the demonstrated guarantee.
 
-For GET, load deposits and withdrawals with a bounded query strategy (for example,
-one ordered LEFT JOIN mapped by deposit ID), avoiding one query per deposit and
+For GET, load deposits and withdrawals in one ordered LEFT JOIN mapped by deposit
+ID, avoiding one query per deposit and
 keeping one statement's consistent view.
 
 ## Verification and remaining risks
@@ -118,9 +121,9 @@ keeping one statement's consistent view.
 6. Validate the static contract, demo startup, and documented commands from a
    clean checkout; pin the database image used by Compose and Testcontainers.
 
-The initial machine has Java 17 available. Maven was not found in PATH and the
-Docker daemon was not running during setup. The Wrapper and a running Docker
-engine are prerequisites for the later verification steps, not completed checks.
+The Wrapper and unit tests run locally on Java 17. The local sandbox cannot
+access Docker's named pipe, so PostgreSQL integration tests run in GitHub Actions.
+See the status log for executed results; no local database test pass is claimed.
 
 The application intentionally has no authentication, scheduling, or idempotency
 mechanism. It is a locally runnable exercise, with no cloud deployment planned.

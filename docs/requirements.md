@@ -1,6 +1,6 @@
 # Requirements and acceptance criteria
 
-Status: implementation specification, not a completion report.
+This document defines scope and acceptance. Executed evidence is in [status](status.md).
 
 ## Sources and scope
 
@@ -78,9 +78,9 @@ are outside acceptance scope; do not add speculative handling.
 | A09 | Empty database | GET returns `[]`; POST succeeds with 204 and changes nothing. |
 | A10 | Batch transaction | One transaction loads, calculates, and persists the batch. A failure must not leave partially updated balances. This is a solution consistency decision. |
 | A11 | Concurrent updates | Serialize overlapping batches with ordered row locks held until commit. Each completed POST applies one cycle without losing another request's update. |
-| A12 | Money representation | Keep the legacy `Double` contract and arithmetic. Use decimal database storage with an explicit adapter; do not silently round balances to two decimals. Verify round-trip behavior before choosing a bounded SQL scale. |
+| A12 | Money representation | Keep the legacy `Double` contract and arithmetic. Use unconstrained SQL NUMERIC with an explicit adapter; do not silently round balances to two decimals. Round-trip behavior is covered by PostgreSQL integration tests. |
 | A13 | Initial data | Supply deterministic demo seed data through a documented database script; do not add a seed/create API. |
-| A14 | Environment | Java 17 compatibility, Maven Wrapper, and PostgreSQL via Docker. Exact dependency and image versions must be pinned and verified at implementation time. |
+| A14 | Environment | Java 17, Maven 3.9.11 Wrapper, Spring Boot 3.5.16, and PostgreSQL 16.15 via Docker. The POM/BOM and container tags pin the tested versions. |
 
 Auto-renewal, termination, additional plans, daily accrual, authentication,
 pagination, background jobs, cloud deployment, and a frontend are out of scope.
@@ -123,6 +123,7 @@ The rounding experiment produced `interest=0.015`, but
 `BigDecimal.valueOf(interest).setScale(2, HALF_UP)` returned `0.02`.
 This establishes why replacing the constructor changes observable behavior.
 
-The upstream JUnit test only asserts `1 == 1`; it provides no balance regression
-protection. Maven tests, API behavior, database behavior, and coverage have not
-yet been validated.
+The upstream JUnit test only asserted `1 == 1`; it provided no balance regression
+protection. It has since been replaced by 57 characterization scenarios, committed
+and run before refactoring. Current API, database, coverage, and runtime evidence
+is tracked separately in the status document.

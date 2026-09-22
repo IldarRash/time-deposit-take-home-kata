@@ -1,15 +1,16 @@
 # Incremental implementation plan
 
-The current stage prepares requirements and the development workflow. Later
-implementation is performed one step at a time so each commit can be discussed
-and verified. Do not bundle the whole solution into the initial setup commit.
+This is the staged implementation sequence used for the solution. Requirements,
+characterization, refactoring, persistence, API, and runtime work are separate
+commits. Current validation and handoff status are maintained in [status](status.md).
 
 ## Current state
 
 - Personal fork created from upstream `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
-- Java 17 selected; requirements and a proposed design documented.
+- Java 17 selected; requirements and implemented design documented.
 - Unchanged calculator inspected and exercised in a temporary 16-check probe.
-- Production code and the original test remain unchanged.
+- The shared `TimeDeposit` remains unchanged. Characterization tests were committed
+  before calculator refactoring; the placeholder assertion has been replaced.
 - See [current status](status.md) for executed steps and verification results.
 - CI is introduced with the persistence step so the required PostgreSQL
   verification can run despite the local sandbox's Docker restriction.
@@ -46,13 +47,13 @@ when each resulting commit remains meaningful and independently verifiable.
 
 ## Final acceptance checklist
 
-- [ ] R01-R11 and AC01-AC12 in the requirements document are demonstrated.
-- [ ] Source compatibility and baseline rounding behavior are preserved.
-- [ ] No extra business APIs, renewal rules, or speculative features were added.
-- [ ] Unit tests and PostgreSQL integration tests have actually run successfully.
-- [ ] Coverage results refer to the calculator/rules and are accompanied by meaningful assertions.
-- [ ] Clean startup, demo seed, Swagger requests, and restart persistence are verified.
-- [ ] Dependency/image versions and Maven distribution are reproducible.
-- [ ] Assistant contributions and remaining limitations are accurately recorded.
-- [ ] Public fork contains the intended commits; no private correspondence or credentials are committed.
+- [x] Implementation requirements R01-R09/R11 and scenarios AC01-AC12 are demonstrated; R10 repository and instructions are ready for author submission.
+- [x] Source compatibility and baseline rounding behavior are preserved.
+- [x] No extra business APIs, renewal rules, or speculative features were added.
+- [x] Unit tests and PostgreSQL integration tests have actually run successfully.
+- [x] Coverage results refer to the calculator/rules and are accompanied by meaningful assertions.
+- [x] Clean startup, demo seed, documented API requests, and restart persistence are verified.
+- [x] Dependency/image versions and Maven distribution are pinned.
+- [x] Assistant contributions and remaining limitations are accurately recorded.
+- [x] Public fork contains the implementation commits; no private correspondence or credentials are committed.
 - [ ] The author has reviewed the submission and sends the repository link separately.
