@@ -10,6 +10,7 @@ are not implemented yet.
 - [Architecture and compatibility decisions](docs/architecture.md)
 - [Incremental implementation plan](docs/implementation-plan.md)
 - [AI-assisted workflow, prompts, and evidence](docs/ai-workflow.md)
+- [Current implementation status and verification](docs/status.md)
 
 Baseline: upstream commit `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
 

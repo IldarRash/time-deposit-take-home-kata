@@ -35,9 +35,8 @@
 - For new features, write focused tests with the smallest useful behavior slice.
 - Use real PostgreSQL Testcontainers tests for mapping, rollback, and locks.
 - Missing Docker is an unexecuted/failed integration check, never a pass.
-- At setup time there is no Maven Wrapper. The first build step adds it. Thereafter
-  run `./mvnw test` for unit tests and `./mvnw verify` for full verification from
-  `java/` (Windows: `mvnw.cmd`). Do not claim these commands work before setup.
+- Run `./mvnw test` for unit tests and `./mvnw verify` for full verification from
+  `java/` (Windows: `mvnw.cmd`). Integration tests require Docker once added.
 - Inspect `git diff --check`, staged changes, and relevant checks before a commit.
 - Report what ran, the results, and remaining limitations. Update
   `docs/ai-workflow.md` with actual assistance and evidence for the completed step.

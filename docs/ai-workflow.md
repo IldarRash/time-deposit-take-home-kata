@@ -38,8 +38,8 @@ available; generated wording/code is not expected to be byte-identical.
 5. Review the result, record the assistance, and create the corresponding atomic
    commit. Continue only with the next author-selected step.
 
-The application build requires Java 17. The build-tooling step will add a pinned
-Maven Wrapper, after which commands from `java/` will be:
+The application build requires Java 17. Maven Wrapper pins Maven 3.9.11 and
+checks its distribution SHA-256. Commands from `java/` are:
 
 ```text
 ./mvnw test
@@ -47,8 +47,8 @@ Maven Wrapper, after which commands from `java/` will be:
 ```
 
 On Windows use `mvnw.cmd test` and `mvnw.cmd verify`. The full suite will require
-a running Docker engine for PostgreSQL Testcontainers. These are planned build
-commands at this stage; neither the Wrapper nor integration suite exists yet.
+a running Docker engine for PostgreSQL Testcontainers once integration tests are
+added. Unit tests and the Wrapper already run; integration verification is pending.
 
 ## Reusable task prompts
 
@@ -96,6 +96,7 @@ of the initial conversation.
 | Setup, 2026-09-22 | Read upstream README and Java files; created the personal fork; drafted requirements, assumptions, architecture, and commit plan. | Identify compatibility obligations and bound the implementation before coding. | Source baseline `c4ea3585e7dd0d4d902268cae83569ca512571b4`; public fork parent verified. No production changes. |
 | Baseline analysis, 2026-09-22 | Wrote and ran a temporary Java probe against the unchanged production classes. | Resolve the rounding ambiguity and confirm selected boundary cases before designing tests. | JDK 17 compiled the two classes plus the probe; all 16 checks passed. This was not Maven/JUnit, integration testing, or coverage measurement. See requirements for scenarios and rounding output. |
 | Workflow setup, 2026-09-22 | Added project instructions, reusable prompts, and this record. | Make subsequent assistance follow the same scope and compatibility constraints. | Markdown links, fenced blocks, and Git whitespace checks passed. No custom agent runtime was installed. |
+| Build tooling, 2026-09-22 | Added the pinned Maven Wrapper, Java release setting, parameterized-test dependency, and JaCoCo. | Run the exercise without an IDE-specific build setup. | Wrapper test run on Java 17 passed: one original test. This is tooling evidence, not meaningful regression protection. |
 
 Future build, test-writing, refactoring, persistence, API, and CI assistance must
 be added as those steps occur. No claim is made that the author has reviewed or
