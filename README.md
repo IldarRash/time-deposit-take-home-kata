@@ -20,7 +20,7 @@ Baseline: upstream commit `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
 With **Java 17** and **Docker Compose v2**, from the repository root:
 
 ```sh
-docker compose --profile docs up -d
+docker compose --profile docs up -d --wait
 cd java
 ./mvnw spring-boot:run
 ```
