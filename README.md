@@ -9,6 +9,7 @@ are not implemented yet.
 - [Requirements, assumptions, and acceptance criteria](docs/requirements.md)
 - [Architecture and compatibility decisions](docs/architecture.md)
 - [Incremental implementation plan](docs/implementation-plan.md)
+- [AI-assisted workflow, prompts, and evidence](docs/ai-workflow.md)
 
 Baseline: upstream commit `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
 
