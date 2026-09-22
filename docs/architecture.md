@@ -35,9 +35,11 @@ HTTP controller -> application use cases -> persistence port
 - Keep `org.ikigaidigital.TimeDeposit` unchanged.
 - Keep `org.ikigaidigital.TimeDepositCalculator` as the compatible public facade,
   including its no-argument construction and `updateBalance` method.
-- Extract a small interest rule contract and implementations for basic, student,
-  and premium. Rule selection uses exact strings and an explicit zero-interest
-  fallback. Keep registration simple; no reflection or plugin discovery.
+- Use the JDK `ToDoubleFunction<TimeDeposit>` contract for basic, student, and
+  premium formulas in one small `PlanInterestRules` class. Rule selection uses
+  exact strings and an explicit zero-interest fallback. This avoids a custom
+  interface and three trivial classes; a future complex rule can be extracted
+  into a named implementation without changing the calculator.
 - Separate rule selection/raw interest from common rounding and balance mutation.
   Preserve the original arithmetic order, including accumulation from zero.
 - Put use-case orchestration in `application`, HTTP DTOs/controllers in
