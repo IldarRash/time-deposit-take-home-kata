@@ -105,6 +105,7 @@ of the initial conversation.
 | Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | CI run 35757618364 passed 58 unit + 15 integration scenarios, coverage gates, seed replay, two cycles, and restart persistence. Local packaging passed. |
 
 | Persistence correction, 2026-09-22 | Added a failing service regression and six PostgreSQL decimal no-op cases, then restricted writes to changed legacy balances. | Preserve stored precision without changing mandated calculator arithmetic. | Service regression failed before the fix and passes after it; 59 local unit/contract tests pass. New PostgreSQL cases await CI. |
+| Contract and schema review, 2026-09-22 | Strengthened OpenAPI status/schema assertions, full-context route enumeration and all required-column/key/FK regressions. | Close specific gaps identified by separate review agents. | Contract assertions pass locally; full-context HTTP and PostgreSQL checks require CI. |
 
 Additional work must extend this record with its actual evidence. The same
 assistant reviewed the implementation against the requirements; no independent

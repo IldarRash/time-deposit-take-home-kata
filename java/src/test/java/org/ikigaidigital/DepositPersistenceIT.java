@@ -7,6 +7,7 @@ import org.ikigaidigital.application.Withdrawal;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -139,16 +140,25 @@ class DepositPersistenceIT extends PostgresIntegrationSupport {
         }
     }
 
-    @Test
-    void schemaEnforcesRequiredValuesPrimaryKeysAndWithdrawalOwnership() {
+    @ParameterizedTest(name = "schema rejects: {0}")
+    @ValueSource(strings = {
+            "INSERT INTO \"timeDeposits\" (id, \"planType\", days, balance) VALUES (NULL, 'basic', 31, 1200)",
+            "INSERT INTO \"timeDeposits\" (id, \"planType\", days, balance) VALUES (2, NULL, 31, 1200)",
+            "INSERT INTO \"timeDeposits\" (id, \"planType\", days, balance) VALUES (2, 'basic', NULL, 1200)",
+            "INSERT INTO \"timeDeposits\" (id, \"planType\", days, balance) VALUES (2, 'basic', 31, NULL)",
+            "INSERT INTO \"timeDeposits\" (id, \"planType\", days, balance) VALUES (1, 'basic', 31, 1200)",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (NULL, 1, 1, '2026-01-01')",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (2, NULL, 1, '2026-01-01')",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (2, 1, NULL, '2026-01-01')",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (2, 1, 1, NULL)",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (1, 1, 1, '2026-01-01')",
+            "INSERT INTO withdrawals (id, \"timeDepositId\", amount, date) VALUES (2, 99, 1, '2026-01-01')"
+    })
+    void schemaEnforcesEveryRequiredColumnBothPrimaryKeysAndWithdrawalOwnership(String invalidInsert) {
         insertDeposit(1, "basic", 31, "1200");
-        assertThatThrownBy(() -> insertDeposit(1, "basic", 31, "1200"))
-                .isInstanceOf(DataIntegrityViolationException.class);
-        assertThatThrownBy(() -> jdbc.update("INSERT INTO \"timeDeposits\" VALUES (2, 'basic', 31, NULL)"))
-                .isInstanceOf(DataIntegrityViolationException.class);
-        assertThatThrownBy(() -> jdbc.update("INSERT INTO withdrawals VALUES (1, 99, 1.00, '2026-01-01')"))
-                .isInstanceOf(DataIntegrityViolationException.class);
-        assertThatThrownBy(() -> jdbc.update("INSERT INTO withdrawals VALUES (1, 1, 1.00, NULL)"))
+        jdbc.update("INSERT INTO withdrawals VALUES (1, 1, 1.00, '2026-01-01')");
+
+        assertThatThrownBy(() -> jdbc.update(invalidInsert))
                 .isInstanceOf(DataIntegrityViolationException.class);
     }
 
