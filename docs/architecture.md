@@ -90,15 +90,20 @@ index on the foreign key. Use `DATE` for withdrawal dates.
 
 Use unconstrained PostgreSQL `NUMERIC` for balance and amount, avoiding an
 invented two-decimal storage rule. Map database decimals to legacy double values
-only at the calculation boundary; map finite updated double values back through
-`BigDecimal.valueOf`. That adapter conversion is separate from the legacy
-`new BigDecimal(interest)` rounding and must not replace it.
+only at the calculation boundary. The service snapshots those Double values and
+saves only changed balances, leaving original database decimals untouched for
+unknown/ineligible plans and for interest rounded to zero. This also preserves
+digits that the legacy Double cannot represent when no update is needed.
+Changed finite results are mapped back through `BigDecimal.valueOf`. That
+conversion is separate from the legacy `new BigDecimal(interest)` rounding and
+must not replace it.
 
 Testcontainers round-trip checks cover half-cent cases, fractional balances, and
 repeated updates. The reloaded finite double matches the fixed baseline result,
-and SQL does not truncate fractional balances. Exact arbitrary-precision money
-arithmetic is outside the legacy contract; the double precision limitation is
-deliberately preserved.
+and SQL adds no extra two-decimal rounding. Changed balances retain the Double
+result's precision limits: exact arbitrary-precision interest arithmetic is
+outside the legacy contract. No-op updates retain the original NUMERIC value,
+including high-precision fractions and integers beyond exact Double precision.
 
 For updates, select deposits ordered by ID with `FOR UPDATE`, calculate, and
 persist balances in one transaction. PostgreSQL's default READ COMMITTED is the

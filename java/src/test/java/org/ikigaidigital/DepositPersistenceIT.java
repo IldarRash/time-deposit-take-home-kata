@@ -75,6 +75,27 @@ class DepositPersistenceIT extends PostgresIntegrationSupport {
         assertThat(reloadedBalance).isEqualTo(Double.parseDouble(expected));
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "unknown,60,0.10000000000000000001",
+            "basic,30,0.10000000000000000001",
+            "student,366,0.10000000000000000001",
+            "premium,45,0.10000000000000000001",
+            "basic,31,0.10000000000000000001",
+            "unknown,60,9007199254740993"
+    })
+    void unchangedLegacyBalancesRetainTheirExactStoredDecimal(String plan, int days, String initial) {
+        insertDeposit(1, plan, days, initial);
+        insertDeposit(2, "basic", 31, "1200");
+
+        service.updateBalances();
+        service.updateBalances();
+
+        assertThat(balance(1)).isEqualByComparingTo(initial);
+        assertThat(service.findAll().get(0).balance()).isEqualByComparingTo(initial);
+        assertThat(balance(2)).isEqualByComparingTo("1202");
+    }
+
     @Test
     void updatesAllPlansWithoutAdvancingDaysOrReapplyingWithdrawals() {
         String unknownPlan = "unknown".repeat(40);

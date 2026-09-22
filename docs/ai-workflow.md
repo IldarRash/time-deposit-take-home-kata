@@ -104,6 +104,8 @@ of the initial conversation.
 | API, 2026-09-22 | Added a two-operation controller, static OpenAPI, mapping-contract check, and HTTP integration tests. | Expose the required behavior without extra endpoints. | CI run 35756927397 passed 58 unit and 15 PostgreSQL/HTTP scenarios; local unit tests also passed. |
 | Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | CI run 35757618364 passed 58 unit + 15 integration scenarios, coverage gates, seed replay, two cycles, and restart persistence. Local packaging passed. |
 
+| Persistence correction, 2026-09-22 | Added a failing service regression and six PostgreSQL decimal no-op cases, then restricted writes to changed legacy balances. | Preserve stored precision without changing mandated calculator arithmetic. | Service regression failed before the fix and passes after it; 59 local unit/contract tests pass. New PostgreSQL cases await CI. |
+
 Additional work must extend this record with its actual evidence. The same
 assistant reviewed the implementation against the requirements; no independent
 reviewer or author approval is implied. Author review and submission remain
