@@ -1,6 +1,6 @@
 CREATE TABLE "timeDeposits" (
     id INTEGER PRIMARY KEY,
-    "planType" VARCHAR(100) NOT NULL,
+    "planType" TEXT NOT NULL,
     days INTEGER NOT NULL,
     balance NUMERIC NOT NULL
 );

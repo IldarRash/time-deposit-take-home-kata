@@ -10,7 +10,7 @@ Last updated: 2026-09-22. This file records actual progress, not just intended s
 | Characterization tests | Complete | 57 scenarios passed on unchanged production code; calculator lines and branches 100%. |
 | Calculation refactor | Complete | Same 57 scenarios pass; rule dispatch extracted into one small class. |
 | Persistence and transactions | Complete | 11 PostgreSQL integration scenarios passed in CI run 35756519228. |
-| HTTP API and OpenAPI | In progress | Two-operation controller, static contract, and end-to-end tests implemented. |
+| HTTP API and OpenAPI | Complete | CI run 35756927397 passed 58 unit and 15 integration scenarios. |
 | Runtime and CI | In progress | CI added early to run PostgreSQL tests; local Docker is sandbox-blocked. |
 | Final clean verification | Pending | No completion claim yet. |
 
@@ -42,6 +42,12 @@ boundaries are sufficient; avoid generic frameworks and speculative features.
   at `3123e26` passed 57 unit scenarios and 11 PostgreSQL integration scenarios
   with no failures or skips. This includes NUMERIC precision, rollback, schema
   constraints, and observed overlapping row locks.
+- API: [CI run 35756927397](https://github.com/IldarRash/time-deposit-take-home-kata/actions/runs/35756927397)
+  at `d4a0337` passed 58 unit and 15 integration scenarios, including HTTP schema,
+  empty state, two POST cycles, withdrawals, status codes, and contract mappings.
+- Review refinement: plan strings use unbounded SQL TEXT, matching the legacy
+  string contract without an invented 100-character restriction. The existing
+  mixed-plan persistence scenario now includes a longer unknown plan string.
 - Docker engine named-pipe access is denied by the local sandbox; database tests
   will require an accessible Docker environment, including CI. This is not a
   database test pass or a reason to skip required integration verification.

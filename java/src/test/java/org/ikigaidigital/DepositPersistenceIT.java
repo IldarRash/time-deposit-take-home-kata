@@ -77,7 +77,8 @@ class DepositPersistenceIT extends PostgresIntegrationSupport {
 
     @Test
     void updatesAllPlansWithoutAdvancingDaysOrReapplyingWithdrawals() {
-        insertDeposit(1, "unknown", 46, "1200");
+        String unknownPlan = "unknown".repeat(40);
+        insertDeposit(1, unknownPlan, 46, "1200");
         insertDeposit(2, "basic", 31, "1200");
         insertDeposit(3, "student", 365, "1200");
         insertDeposit(4, "premium", 46, "1200");
@@ -89,6 +90,7 @@ class DepositPersistenceIT extends PostgresIntegrationSupport {
         assertThat(service.findAll()).extracting(view -> view.balance().doubleValue())
                 .containsExactly(1200.0, 1201.0, 1203.0, 1205.0, 1200.0);
         assertThat(service.findAll()).extracting(DepositView::days).containsExactly(46, 31, 365, 46, 366);
+        assertThat(service.findAll().get(0).planType()).isEqualTo(unknownPlan);
         assertThat(service.findAll().get(1).withdrawals()).containsExactly(
                 new Withdrawal(1, new BigDecimal("25.00"), LocalDate.of(2026, 1, 15)));
     }
