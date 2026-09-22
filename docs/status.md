@@ -7,7 +7,7 @@ Last updated: 2026-09-22. This file records actual progress, not just intended s
 | Requirements and design | Complete | `432b076`; upstream and legacy behavior documented. |
 | Project workflow | Complete | `3b2d099`; project instructions and repeatable prompts. |
 | Java build tooling | Complete | Maven 3.9.11 Wrapper, Java 17 release, JUnit parameters and coverage configured; baseline test ran. |
-| Characterization tests | Pending | Original assertion does not verify balances. |
+| Characterization tests | Complete | 57 scenarios passed on unchanged production code; calculator lines and branches 100%. |
 | Calculation refactor | Pending | Production calculator unchanged. |
 | Persistence and transactions | Pending | Design only. |
 | HTTP API and OpenAPI | Pending | Design only. |
@@ -33,6 +33,9 @@ boundaries are sufficient; avoid generic frameworks and speculative features.
 - Java 17 compilation of the initial bounded probe passed.
 - Build step: `mvnw.cmd test` on Java 17 passed (1 original test, no failures or
   skips). Its `1 == 1` assertion remains ineffective; this only verifies tooling.
+- Characterization step: `mvnw.cmd clean test` passed 57 scenarios with no failures
+  or skips. JaCoCo: calculator 15/15 lines and 14/14 branches; shared model 12/12
+  lines. Production sources were still identical to upstream when this ran.
 - Docker engine named-pipe access is denied by the local sandbox; database tests
   will require an accessible Docker environment, including CI. This is not a
   database test pass or a reason to skip required integration verification.
