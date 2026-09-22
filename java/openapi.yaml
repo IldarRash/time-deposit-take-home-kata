@@ -1,0 +1,84 @@
+openapi: 3.0.3
+info:
+  title: Time Deposit API
+  version: 1.0.0
+  description: |
+    Two operations over persisted deposits. Each update applies one legacy
+    monthly accrual cycle to the current balances and stored days. The listed
+    plan rates are divided by 12; stored days and withdrawals are unchanged.
+    Repeated updates accrue again and are not idempotent.
+servers:
+  - url: http://localhost:8080
+paths:
+  /time-deposits:
+    get:
+      operationId: listTimeDeposits
+      summary: Retrieve all deposits with their historical withdrawals
+      description: Deposits and their withdrawals are ordered by ID. An empty database returns an empty array.
+      responses:
+        '200':
+          description: All persisted deposits
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TimeDeposit'
+              example:
+                - id: 1
+                  planType: basic
+                  balance: 1200.00
+                  days: 31
+                  withdrawals:
+                    - id: 10
+                      amount: 25.00
+                      date: '2026-01-15'
+  /time-deposits/update-balances:
+    post:
+      operationId: updateTimeDepositBalances
+      summary: Apply one interest cycle to every deposit
+      description: |
+        No request body. Updates are atomic, including an empty database.
+        Overlapping requests serialize; each successful request applies a cycle.
+        Do not automatically retry this non-idempotent operation.
+      responses:
+        '204':
+          description: All balance updates committed; no response body
+components:
+  schemas:
+    TimeDeposit:
+      type: object
+      additionalProperties: false
+      required: [id, planType, balance, days, withdrawals]
+      properties:
+        id:
+          type: integer
+          format: int32
+        planType:
+          type: string
+          description: Exact legacy string. Known values are basic, student, and premium; other strings earn no interest.
+        balance:
+          type: number
+          description: Decimal database balance; the existing calculator uses double arithmetic. Not restricted to two decimal places.
+        days:
+          type: integer
+          format: int32
+          description: Stored elapsed day count, unchanged by a balance update.
+        withdrawals:
+          type: array
+          description: Historical records already reflected in the balance; never subtracted again by an update.
+          items:
+            $ref: '#/components/schemas/Withdrawal'
+    Withdrawal:
+      type: object
+      additionalProperties: false
+      required: [id, amount, date]
+      properties:
+        id:
+          type: integer
+          format: int32
+        amount:
+          type: number
+        date:
+          type: string
+          format: date
