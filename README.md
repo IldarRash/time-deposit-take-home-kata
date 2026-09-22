@@ -1,5 +1,17 @@
 # Time Deposit Refactoring Kata - Take-Home Assignment
 
+## Java solution status
+
+This fork uses **Java 17** and preserves the upstream assignment below.
+The current stage is requirements and implementation planning; the API and database
+are not implemented yet.
+
+- [Requirements, assumptions, and acceptance criteria](docs/requirements.md)
+- [Architecture and compatibility decisions](docs/architecture.md)
+- [Incremental implementation plan](docs/implementation-plan.md)
+
+Baseline: upstream commit `c4ea3585e7dd0d4d902268cae83569ca512571b4`.
+
 ## XA Bank Time Deposit
 
 ### Context
