@@ -101,6 +101,7 @@ of the initial conversation.
 | Calculation refactor, 2026-09-22 | Extracted exact-string rule dispatch into one class using a JDK functional interface. | Separate varying formulas from common balance mutation without a class hierarchy. | The unchanged 57-scenario suite passes after refactoring; the shared model remains unchanged. |
 | Persistence, 2026-09-22 | Added JDBC mapping, Flyway schema, transactional service, PostgreSQL integration scenarios, and CI. | Add real persistence and verify decimal precision, rollback, and serialization. | CI run 35756519228 passed 57 unit scenarios and 11 PostgreSQL scenarios, none skipped. Local Docker remains sandbox-blocked. |
 | API, 2026-09-22 | Added a two-operation controller, static OpenAPI, mapping-contract check, and HTTP integration tests. | Expose the required behavior without extra endpoints. | Unit and compilation checks run locally; HTTP/PostgreSQL results are recorded in status.md after CI. |
+| Runtime and review, 2026-09-22 | Added Compose, repeatable seed data, startup instructions, a packaged-application smoke test, and calculator coverage gates; removed an unnecessary SQL string length limit. | Verify the deliverable as an evaluator would run it. | Local packaging and 58 unit scenarios pass. The new smoke check and SQL refinement are awaiting the next CI run. |
 
 Future build, test-writing, refactoring, persistence, API, and CI assistance must
 be added as those steps occur. No claim is made that the author has reviewed or

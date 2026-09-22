@@ -11,8 +11,8 @@ Last updated: 2026-09-22. This file records actual progress, not just intended s
 | Calculation refactor | Complete | Same 57 scenarios pass; rule dispatch extracted into one small class. |
 | Persistence and transactions | Complete | 11 PostgreSQL integration scenarios passed in CI run 35756519228. |
 | HTTP API and OpenAPI | Complete | CI run 35756927397 passed 58 unit and 15 integration scenarios. |
-| Runtime and CI | In progress | CI added early to run PostgreSQL tests; local Docker is sandbox-blocked. |
-| Final clean verification | Pending | No completion claim yet. |
+| Runtime and CI | Implemented, smoke run pending | Compose, safe demo seed, executable JAR, and clean-start/restart smoke check. |
+| Final clean verification | Pending latest CI | Previous API and DB checks passed; latest runtime changes still need CI. |
 
 The author has authorized sequential implementation of the complete solution,
 with small commits and publication to the personal fork. Java 17 and simplicity
@@ -48,6 +48,8 @@ boundaries are sufficient; avoid generic frameworks and speculative features.
 - Review refinement: plan strings use unbounded SQL TEXT, matching the legacy
   string contract without an invented 100-character restriction. The existing
   mixed-plan persistence scenario now includes a longer unknown plan string.
+- Runtime setup: `mvnw.cmd package` passed all 58 local unit/contract scenarios
+  and produced the executable Spring Boot JAR. Docker smoke execution is pending CI.
 - Docker engine named-pipe access is denied by the local sandbox; database tests
   will require an accessible Docker environment, including CI. This is not a
   database test pass or a reason to skip required integration verification.

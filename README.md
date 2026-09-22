@@ -3,9 +3,10 @@
 ## Java solution status
 
 This fork uses **Java 17** and preserves the upstream assignment below.
-The current stage is requirements and implementation planning; the API and database
-are not implemented yet.
+The solution provides two REST operations backed by PostgreSQL, preserving the
+existing calculator's behavior. See the status page for executed verification.
 
+- [Run, test, and call the API using the Swagger contract](docs/running.md)
 - [Requirements, assumptions, and acceptance criteria](docs/requirements.md)
 - [Architecture and compatibility decisions](docs/architecture.md)
 - [Incremental implementation plan](docs/implementation-plan.md)

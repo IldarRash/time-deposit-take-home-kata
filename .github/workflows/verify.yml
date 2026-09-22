@@ -26,6 +26,9 @@ jobs:
           cache-dependency-path: java/pom.xml
       - name: Verify with real PostgreSQL
         run: ./mvnw -B -ntp verify
+      - name: Verify clean startup and restart persistence
+        working-directory: .
+        run: bash scripts/smoke-test.sh
       - name: Preserve test evidence
         if: always()
         uses: actions/upload-artifact@v4
@@ -35,3 +38,4 @@ jobs:
             java/target/surefire-reports/
             java/target/failsafe-reports/
             java/target/site/jacoco/
+            java/target/smoke-*
