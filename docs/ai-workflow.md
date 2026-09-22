@@ -99,6 +99,7 @@ of the initial conversation.
 | Build tooling, 2026-09-22 | Added the pinned Maven Wrapper, Java release setting, parameterized-test dependency, and JaCoCo. | Run the exercise without an IDE-specific build setup. | Wrapper test run on Java 17 passed: one original test. This is tooling evidence, not meaningful regression protection. |
 | Characterization, 2026-09-22 | Replaced the placeholder assertion with 57 public-calculator scenarios; captured 24 numeric outputs from baseline. | Protect existing behavior before changing structure. | `mvnw.cmd clean test` passed all 57; calculator line/branch coverage 100%, with production code unchanged. |
 | Calculation refactor, 2026-09-22 | Extracted exact-string rule dispatch into one class using a JDK functional interface. | Separate varying formulas from common balance mutation without a class hierarchy. | The unchanged 57-scenario suite passes after refactoring; the shared model remains unchanged. |
+| Persistence, 2026-09-22 | Added JDBC mapping, Flyway schema, transactional service, PostgreSQL integration scenarios, and CI. | Add real persistence and verify decimal precision, rollback, and serialization. | Local unit tests and integration-source compilation are checked before publication; actual PostgreSQL execution is pending CI because local Docker access is denied. |
 
 Future build, test-writing, refactoring, persistence, API, and CI assistance must
 be added as those steps occur. No claim is made that the author has reviewed or

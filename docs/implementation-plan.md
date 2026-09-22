@@ -10,7 +10,9 @@ and verified. Do not bundle the whole solution into the initial setup commit.
 - Java 17 selected; requirements and a proposed design documented.
 - Unchanged calculator inspected and exercised in a temporary 16-check probe.
 - Production code and the original test remain unchanged.
-- Committed regression tests, build wrapper, API, database, and CI are pending.
+- See [current status](status.md) for executed steps and verification results.
+- CI is introduced with the persistence step so the required PostgreSQL
+  verification can run despite the local sandbox's Docker restriction.
 
 ## Commit sequence
 

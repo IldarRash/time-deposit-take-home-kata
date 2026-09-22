@@ -9,9 +9,9 @@ Last updated: 2026-09-22. This file records actual progress, not just intended s
 | Java build tooling | Complete | Maven 3.9.11 Wrapper, Java 17 release, JUnit parameters and coverage configured; baseline test ran. |
 | Characterization tests | Complete | 57 scenarios passed on unchanged production code; calculator lines and branches 100%. |
 | Calculation refactor | Complete | Same 57 scenarios pass; rule dispatch extracted into one small class. |
-| Persistence and transactions | Pending | Design only. |
+| Persistence and transactions | Awaiting integration run | JDBC, Flyway, transaction scope, and PostgreSQL tests implemented. |
 | HTTP API and OpenAPI | Pending | Design only. |
-| Runtime and CI | Pending | Docker unavailable to the local sandbox. |
+| Runtime and CI | In progress | CI added early to run PostgreSQL tests; local Docker is sandbox-blocked. |
 | Final clean verification | Pending | No completion claim yet. |
 
 The author has authorized sequential implementation of the complete solution,
